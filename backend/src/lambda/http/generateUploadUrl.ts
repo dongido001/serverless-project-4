@@ -5,18 +5,12 @@ import { cors, httpErrorHandler } from 'middy/middlewares'
 import FileService from '../../services/File'
 import Todo from '../../models/Todo'
 import { getUserId } from '../utils'
-import { createLogger } from '../../utils/logger'
-
-const logger = createLogger("SigningUrl")
 
 export const handler = middy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    logger.info("Begining s3 signing")
 
     try {
       const { fileName } = JSON.parse(event.body || '{}')
-
-      logger.info(`Got fileName for s3 signing, ${fileName}`)
 
       const _todo = new Todo()
       const userId = getUserId(event)
@@ -34,7 +28,6 @@ export const handler = middy(
         body: JSON.stringify({ uploadUrl: signedUrl })
       }
     } catch (e) {
-      logger.info("Error s3 signing", { error: e.message })
       return {
         statusCode: 502,
         headers: {
