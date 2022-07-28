@@ -15,15 +15,13 @@ export const handler = middy(
 
     try {
       const { fileName } = JSON.parse(event.body || '{}')
-      
-      logger.info(`Got fileName for s3 signing, ${fileName}`)
 
-      if (!fileName) throw new Error("fileName is required.")
+      logger.info(`Got fileName for s3 signing, ${fileName}`)
 
       const _todo = new Todo()
       const userId = getUserId(event)
       const todoId = event.pathParameters?.todoId
-      const { signedUrl, image } = FileService.createAttachmentPresignedUrl(fileName)
+      const { signedUrl, image } = FileService.createAttachmentPresignedUrl(fileName || "")
 
       await _todo.updateTodoAttachmentUrl(todoId, image, userId)
 
